@@ -18,6 +18,6 @@ Student work is saved on the device only. Students hand it in with "Copy my work
 
 Readings are original teaching texts, not transcriptions of their sources. Committee conversations and survey data are fictional unless a step says otherwise.
 
-To publish: Settings -> Pages -> Deploy from branch -> main, root. The page will be at https://radan55.github.io/stormweek16/
+To publish: Settings -> Pages -> Deploy from branch -> main, root. The page will be at https://radan55.github.io/Stormweek16/
 
 EL Publishing - original classroom practice.
