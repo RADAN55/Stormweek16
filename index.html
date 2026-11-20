@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Look Again Lesson Week</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 /* Layout idea: one reading column; navy masthead with five day tabs; each day carries its own accent stripe; gold marks the active step. */
 :root{--navy:#1E2761;--gold:#C9A227;--bg:#F4F5FA;--card:#FFFFFF;--ink:#171B33;--muted:#5B6180;--line:#D8DBEA;--soft:#ECEEF7;--ok:#1F7A4D;--no:#B3372C;--claim:#FFE08A;--evid:#B9E3C9;--day:#2F7D4F;--mast:#1E2761;--mastink:#FFFFFF;
@@ -182,6 +182,13 @@ body.proj .agenda{font-size:1.35rem}body.proj .aghead h2{font-size:2rem}body.pro
 .ctip{background:var(--card);border-radius:8px;padding:8px 10px;margin-top:6px!important}
 .cex{background:var(--card);border-radius:8px;padding:8px 12px;margin:8px 0}.cex p{margin:2px 0}
 body.proj .coach{display:none}
+.rdbox{background:var(--soft);border-radius:10px;padding:12px 16px;font-size:1.08rem;line-height:1.6;max-width:68ch}
+.cab{background:#16181f;border-radius:16px;padding:14px;max-width:520px;margin:12px 0;display:grid;gap:10px;justify-items:center}
+#gcv{width:100%;max-width:480px;height:auto;background:#000;border:3px solid #39ff14;border-radius:6px;image-rendering:pixelated;touch-action:none}
+.pad{display:flex;gap:10px;justify-content:center;width:100%}
+.pad button{flex:1;max-width:110px;min-height:56px;background:#2a2d3a;color:#fff;border:2px solid #555b75;border-radius:12px;font-size:1.3rem;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad button.fire{background:#b3372c;border-color:#ff8a7e;font-family:"Press Start 2P",monospace;font-size:.8rem}
+.startb{background:#39ff14;color:#000;border:0;border-radius:10px;padding:12px 28px;font-family:"Press Start 2P","Courier New",monospace;font-size:.9rem;min-height:46px}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
 .foot{font-size:.85rem;color:var(--muted);padding:8px 0 24px;max-width:75ch}
 .timer{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:10px 16px;z-index:20}
@@ -749,7 +756,7 @@ function(l,d){const pl=["My claim","Source 1 + detail","Source 2 + detail","Conc
 
 function(l,d){const ds=dataScore(l,d);const rs=d.resc||{};const rub=d.rub||{};let pp=0;[0,1,2,3].forEach(i=>{if((d.pchk||{})[i])pp++;});
  return `<h2>Wrap-up</h2><p class="lead">Your evidence from ${l.day}. Classroom practice scores only; they are not official ELPA21 levels.</p>
- <div class="tiles"><div class="tile"><b>${mcScore(l.qs,d.q,d.qc)}<small>/7</small></b><span>Reading 1-7</span></div><div class="tile"><b>${mcScore(l.listen.qs,d.lq,d.lqc)}<small>/4</small></b><span>Listening 9-12</span></div><div class="tile"><b>${ds[0]}<small>/${ds[1]}</small></b><span>Data</span></div><div class="tile"><b>${d.arev?aucScore(l,d):"–"}</b><span>Auction tokens</span></div><div class="tile"><b>${pp}<small>/4</small></b><span>Pitch checklist</span></div><div class="tile"><b>${d.seqc?(seqOK(l,d)?"✓":"×"):"–"}</b><span>Sequence</span></div></div>
+ <div class="tiles"><div class="tile"><b>${mcScore(l.qs,d.q,d.qc)}<small>/7</small></b><span>Reading 1-7</span></div><div class="tile"><b>${mcScore(l.listen.qs,d.lq,d.lqc)}<small>/4</small></b><span>Listening 9-12</span></div><div class="tile"><b>${ds[0]}<small>/${ds[1]}</small></b><span>Data</span></div><div class="tile"><b>${d.arev?aucScore(l,d):"–"}</b><span>Auction tokens</span></div><div class="tile"><b>${pp}<small>/4</small></b><span>Pitch checklist</span></div><div class="tile"><b>${d.seqc?(seqOK(l,d)?"✓":"×"):"–"}</b><span>Sequence</span></div><div class="tile"><b>${elpaScore(l,d)}<small>/3</small></b><span>ELPA21 practice</span></div></div>
  <button class="btn" data-act="copy">Copy my work</button> <span class="muted">Paste it into a document or message for your teacher.</span>
  ${T.copy?`<label class="lb" for="copybox">${T.copy==="ok"?"Copied. Your work is also below.":"Copying is blocked here. Select the text below and copy it."}</label><textarea id="copybox" rows="8" readonly>${esc(workText())}</textarea>`:""}
  <h3>Bonus · Sentence Rescue</h3><p class="muted">Correct each sentence. One point for each correction and one more for explaining the rule to a partner.</p>
@@ -771,7 +778,7 @@ function(l,d){const ds=dataScore(l,d);const rs=d.resc||{};const rub=d.rub||{};le
 ];
 
 function workText(){const l=Lx(),d=D(),ds=dataScore(l,d);const v=x=>x||"(blank)";
- return [`${l.day}: ${l.title}`,`Opinion at start: ${d.op!=null?l.opinion.pos[d.op]:"(none)"} - ${v(d.opWhy)}`,`Reading 1-7: ${mcScore(l.qs,d.q,d.qc)}/7`,`Question 8: ${v(d.short)}`,`Listening 9-12: ${mcScore(l.listen.qs,d.lq,d.lqc)}/4 | Sequence: ${d.seqc?(seqOK(l,d)?"correct":"not yet"):"not checked"}`,`Listening notes: ${l.listen.cast.map((c,i)=>c+": "+v((d.ln||{})[i])).join(" | ")}`,`Data: ${ds[0]}/${ds[1]} | Explanation: ${v(d.dexp)}`,`Pitch plan: ${[0,1,2,3].map(i=>v((d.pitch||{})[i])).join(" | ")}`,`Writing plan: ${[0,1,2,3].map(i=>v((d.wplan||{})[i])).join(" | ")}`,`Draft: ${v(d.draft)}`,`Step-up moves checked: ${STEPUP.map((s,i)=>(d.up||{})[i]?s[0]:null).filter(Boolean).join(", ")||"none"}`,`Exit ticket: My opinion is ${v((d.exit||{})[0])}. One piece of evidence is ${v((d.exit||{})[1])}. This supports/changes my opinion because ${v((d.exit||{})[2])}.`,`Domain to improve: ${v(d.dom)}`].join("\n");}
+ return [`${l.day}: ${l.title}`,`Opinion at start: ${d.op!=null?l.opinion.pos[d.op]:"(none)"} - ${v(d.opWhy)}`,`Reading 1-7: ${mcScore(l.qs,d.q,d.qc)}/7`,`Question 8: ${v(d.short)}`,`Listening 9-12: ${mcScore(l.listen.qs,d.lq,d.lqc)}/4 | Sequence: ${d.seqc?(seqOK(l,d)?"correct":"not yet"):"not checked"}`,`Listening notes: ${l.listen.cast.map((c,i)=>c+": "+v((d.ln||{})[i])).join(" | ")}`,`Data: ${ds[0]}/${ds[1]} | Explanation: ${v(d.dexp)}`,`Pitch plan: ${[0,1,2,3].map(i=>v((d.pitch||{})[i])).join(" | ")}`,`Writing plan: ${[0,1,2,3].map(i=>v((d.wplan||{})[i])).join(" | ")}`,`Draft: ${v(d.draft)}`,`Step-up moves checked: ${STEPUP.map((s,i)=>(d.up||{})[i]?s[0]:null).filter(Boolean).join(", ")||"none"}`,`Exit ticket: My opinion is ${v((d.exit||{})[0])}. One piece of evidence is ${v((d.exit||{})[1])}. This supports/changes my opinion because ${v((d.exit||{})[2])}.`,`Domain to improve: ${v(d.dom)}`,`ELPA21 practice: ${elpaScore(l,d)}/3 | Writing task: ${v(d.ew)}`].join("\n");}
 
 function live(){const el=$("meters");if(!el)return;const l=Lx(),t=(D().draft||"");const n=(t.match(/[^.!?]+[.!?]+/g)||[]).length;const tg=FR.E.target;const low=t.toLowerCase();const n1=LESSONS.indexOf(l)+1;const hits=STEPUP.slice(0,n1).map(s=>new RegExp(s[2]).test(low));const um=$("upmsg");if(um){const c=hits.filter(Boolean).length;um.textContent=n<tg[0]?"Finish your 4-6 sentences first.":(c===n1?"You used every step-up move. That is Progressing-level writing.":`Step-up moves found in your draft: ${c} of ${n1}.`);}
  const src=[["Reading",/paragraph|reading|passage|article|autobiography/.test(low)],["Conversation",new RegExp(l.write.talk).test(low)],["Numbers",/\d/.test(low)&&/survey|table|test|votes|volunteers|doses|bowls|results|\bof\b/.test(low)]];
@@ -794,7 +801,7 @@ function coachIntro(l){const c=COACH[l.id];if(!S.coach)return "";
  return `<aside class="coach intro"><div class="chd"><span class="cav" aria-hidden="true">${initials(c.name)}</span><span class="cnm"><b>${c.name}</b><small>${c.role} · today's big idea: ${l.kicker.toLowerCase()}</small></span><button class="say" data-act="saycoach" data-i="-1">Listen</button></div>
  <p>${c.idea}</p><div class="cex"><b>Example</b>${c.ex.map(x=>`<p>${x}</p>`).join("")}</div><p class="muted">${c.name} explains every step below. Coaches are fictional guides; their voices are computer-generated.</p></aside>`;}
 /* ---------- render ---------- */
-function render(scroll){const l=Lx(),d=D();document.documentElement.style.setProperty("--day",l.color);
+function render(scroll){const l=Lx(),d=D();stopGame();document.documentElement.style.setProperty("--day",l.color);
  $("days").innerHTML=LESSONS.map(x=>`<button class="day ${x.id===S.day?"on":""}" data-act="day" data-d="${x.id}" style="--c:${x.color}"><b>${x.abbr}</b><span>${x.title}</span></button>`).join("");
  $("ctl").innerHTML=`<span class="seg"><button class="${S.lane==="E"?"on":""}" data-act="lane" data-v="E">Emerging</button><button class="${S.lane==="P"?"on":""}" data-act="lane" data-v="P">Progressing</button></span><button class="tg ${S.coach?"on":""}" data-act="coach" aria-pressed="${S.coach}">Coach</button><button class="tg ${S.es?"on":""}" data-act="es" aria-pressed="${S.es}">Español</button><button class="tg ${S.teacher?"on":""}" data-act="teach" aria-pressed="${S.teacher}">Teacher view</button>`;
  $("hero").innerHTML=`<p class="kick">${l.day}, ${l.date} · ${l.kicker} · 90 minutes</p><h1>${l.title}</h1><p class="sub">${l.sub}</p>
@@ -807,7 +814,7 @@ function render(scroll){const l=Lx(),d=D();document.documentElement.style.setPro
  $("steps").innerHTML=STEPS.map((s,i)=>`<button class="stp ${i===d.step?"on":""}" data-act="step" data-i="${i}"><b>${i+1}</b>${s}</button>`).join("");
  $("panel").innerHTML=coachStep(l,d.step||0)+VIEW[d.step||0](l,d);
  $("nav").innerHTML=`<button class="btn ghost" data-act="step" data-i="${(d.step||0)-1}" ${d.step>0?"":"disabled"}>Back</button><span class="muted">Step ${(d.step||0)+1} of ${STEPS.length}</span><button class="btn" data-act="step" data-i="${(d.step||0)+1}" ${d.step<STEPS.length-1?"":"disabled"}>Next: ${STEPS[(d.step||0)+1]||"done"}</button>`;
- live();drawTimer();
+ live();drawTimer();if(STEPS[d.step||0]==="Arcade")attract();
  if(scroll){const y=$("steps").getBoundingClientRect().top+window.scrollY-70;window.scrollTo({top:y,behavior:"auto"});const a=document.querySelector(".stp.on");a&&a.scrollIntoView&&a.scrollIntoView({block:"nearest",inline:"center"});}
 }
 
@@ -872,8 +879,123 @@ document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.tar
 document.addEventListener("input",e=>{if(e.target.dataset&&e.target.dataset.g){S[e.target.dataset.g]=e.target.value;save();if(/^\d\d:\d\d$/.test(e.target.value)||!e.target.value){render();const n=$("agstart");n&&n.focus();}return;}const b=e.target.dataset&&e.target.dataset.bind;if(!b)return;st(b,e.target.value);if(e.target.dataset.live)live();});
 function fromHash(){const h=(location.hash||"").replace("#","").toLowerCase();const l=LESSONS.find(x=>x.hash===h);if(l&&l.id!==S.day){S.day=l.id;save();return true;}return false;}
 window.addEventListener("hashchange",()=>{if(fromHash()){stopSpeak();render();}});
-fromHash();render();
+/* ---------- ELPA21-style practice ---------- */
+const EDITQ="Choose the sentence that is written correctly.";
+const ELPA={
+mon:{listen:{t:"Attention, students. The student council is collecting opinions about the salad bar. Survey forms are on the table outside the cafeteria. Please complete one form by Thursday. The council will share the results at Friday's meeting, and students from every grade are invited.",q:"What should students do by Thursday?",o:["Attend the council meeting","Complete a survey form","Eat at the salad bar","Join the student council"],a:[1]},
+ read:{t:"One school wanted to know whether students would eat more fruit if it was cut into pieces. For one month, the cafeteria served whole apples. The next month, it served sliced apples. Workers counted how many apples were thrown away each day. Fewer apples were wasted during the second month.",q:"What evidence did the school collect?",o:["Students' opinions about apples","The price of apples each month","The number of apples thrown away each day","The names of students who ate fruit"],a:[2]},
+ edit:{q:EDITQ,o:["The committee have collect feedback from forty students.","The committee has collecting feedback from forty students.","The committee collected feedback from forty student.","The committee has collected feedback from forty students."],a:[3]},
+ write:["construct a claim","Your school is deciding whether to add a salad bar. Write a claim and one reason. Then name one piece of evidence the school should collect."],
+ speak:["analyze a claim","A classmate says, \"Everyone hates the cafeteria food.\" Is this claim supported? Explain what evidence would be needed."]},
+tue:{listen:{t:"Good morning. Today's science talk is about food waste. When food is thrown away, the water, land, and fuel used to produce it are wasted too. Researchers estimate that about one third of the food produced in the world is never eaten. Reducing waste is one of the simplest ways to lower food's effect on the climate.",q:"What is the speaker's main point?",o:["Most food is produced far away.","Wasting food also wastes the resources used to make it.","Food waste is impossible to reduce.","Researchers disagree about the climate."],a:[1]},
+ read:{t:"On average, students at one school take 12 minutes to eat lunch. This does not mean every student needs 12 minutes. Some finish in 5 minutes, and others need 20. The principal used the average to plan the schedule, but she added extra time for students who eat slowly.",q:"Why did the principal add extra time?",o:["The average was calculated incorrectly.","Every student needs exactly 12 minutes.","Lunch was moved to a later hour.","The average does not describe every student."],a:[3]},
+ edit:{q:EDITQ,o:["On average, beans produce fewer emissions than beef.","In average, beans produces fewer emissions than beef.","On average, beans produce fewer emissions then beef.","On average, beans is producing fewer emissions than beef."],a:[0]},
+ write:["construct a claim","Should the cafeteria post a sign showing which lunches have a smaller climate footprint? Write a claim with one qualifier (on average, usually, typically) and one reason."],
+ speak:["analyze a claim","A poster says, \"Walking to school is always faster than taking the bus.\" Explain why the word always is a problem, and say how you would rewrite the claim."]},
+wed:{listen:{t:"Welcome to the school garden tour. This bed contains herbs: basil, mint, and parsley. Please do not pick or taste any plant unless a teacher tells you it is safe. Some plants along the fence look like herbs, but they are weeds, and a few can make you sick.",q:"Why should students not taste the plants along the fence?",o:["They belong to another class.","They have not been watered.","Some of them are not safe to eat.","They are saved for the cafeteria."],a:[2]},
+ read:{t:"The label on a juice bottle says \"Made with real fruit.\" Dana read the ingredient list on the back. The first ingredient was water, the second was sugar, and fruit juice was the fifth. The label was true, but the list showed that the drink contained very little fruit.",q:"What does the ingredient list show?",o:["The label is false.","The drink has no sugar.","The bottle contains only water.","The drink contains only a small amount of fruit."],a:[3]},
+ edit:{q:EDITQ,o:["Although the two mushrooms looks different, they belong to the same species.","Although the two mushrooms look different, they belong to the same species.","Although the two mushrooms look different, but they belong to the same species.","Although the two mushrooms look different, they belongs to the same species."],a:[1]},
+ write:["construct a claim","Should restaurants be required to explain words such as \"fresh\" or \"wild\" on a menu? Write a claim and one reason. Use both or unlike."],
+ speak:["compare","Describe one way a white button mushroom and a portobello are alike and one way they are different. Then explain why appearance is not proof."]},
+thu:{listen:{t:"This is a safety reminder for Saturday's nature hike. Stay on the marked trail and wear closed shoes. If you see a snake, stop, back away slowly, and tell a group leader. Do not try to move it. The hike begins at nine o'clock at the north gate.",q:"What should a hiker do first after seeing a snake?",o:["Move it off the trail","Stop","Run to the north gate","Find a stick"],a:[1]},
+ read:{t:"At 3:10, the fire alarm rang during chemistry class. First, the teacher turned off the gas. Then the students lined up and walked to the field. Because one student had left school early, the count was one short, so the teacher checked the sign-out sheet before reporting that everyone was safe.",q:"Why was the count one short?",o:["A student was still in the lab.","The teacher counted incorrectly.","A student had left school early.","The class walked to the wrong field."],a:[2]},
+ edit:{q:EDITQ,o:["After he cutted the grass, he put the mower away.","After he cut the grass, he puts the mower away.","After he cut the grass, he put the mower away.","After he cut the grass, he putted the mower away."],a:[2]},
+ write:["tell the steps in order","Write three sentences that tell, in order, what a student should do when the fire alarm rings. Use first, then, and finally. Add one sentence with because."],
+ speak:["observe and report","Explain, in order, what happened in today's reading from the moment Jennifer saw the snake until Jeremy was bitten. Use at least three sequence words."]},
+fri:{listen:{t:"Before you leave, here is a reminder about the writing portfolio. Choose one paper from this semester that received a low grade. Revise it, and attach a short note explaining what you changed and why. Portfolios are due on December fifteenth. I am available after school on Tuesdays if you want feedback.",q:"What must students attach to the revised paper?",o:["The original grade","A note explaining their changes","A letter from a parent","A new paper on a different topic"],a:[1]},
+ read:{t:"Marcus failed his first driving test because he forgot to check his mirrors. He was embarrassed, but he asked the examiner what he had done wrong. For two weeks he practiced with his aunt, saying each step aloud. On his second attempt, he passed.",q:"What does Marcus's response to failing show?",o:["He blames the examiner.","He decides that driving is not for him.","He uses the failure to find out what to practice.","He passes without any more practice."],a:[2]},
+ edit:{q:EDITQ,o:["At first she struggle, but later she earned the highest award.","At first she struggled, but later she earn the highest award.","At first she struggled, but later she earned the most high award.","At first she struggled, but later she earned the highest award."],a:[3]},
+ write:["respond to a classmate","Your classmate writes, \"I failed the first quiz, so I am bad at math.\" Write 2-4 sentences in reply. Use one detail from today's reading."],
+ speak:["give an opinion","Is it more useful to hear what you did well or what you did wrong? Give your opinion and one example."]}
+};
+STEPS.splice(9,0,"ELPA21","Arcade");
+STEPCOACH.splice(9,0,
+ {what:"You try five short ELPA21-style tasks: one listening, one reading, two writing, and one speaking.",why:"The ELPA21 test in the spring uses tasks like these. If you know the task types now, on test day you can think about the language instead of the directions.",how:["Read or listen to everything before you answer.","For the editing question, read each sentence quietly aloud. Check the verb first.","For speaking, answer the question in your first sentence, then give your reason."]},
+ {what:"You play retro arcade games built from today's eight vocabulary words.",why:"Fast recall is part of knowing a word. In a game you match a meaning to a word, or spell it, without stopping to translate.",how:["Read the meaning at the top of the screen first.","In Word Invaders, shoot only the word that matches. A wrong hit costs a life.","In Spell Snake, eat the letters in order to spell the word."]});
+Object.values(COACH).forEach(c=>c.tips.splice(9,0,"These tasks use new short texts, not today's passage. Use the same habit: find the evidence before you choose.","Play after you finish your writing, or when your teacher opens the arcade. Say each word aloud when you hit it."));
+function elpaScore(l,d){const E=ELPA[l.id];return mcScore([E.listen,E.read,E.edit],d.eq,d.eqc);}
+function elpaView(l,d){const E=ELPA[l.id],ck=d.esp||{};const sp=["I answered the question in my first sentence.","I gave a reason or an example.","I kept speaking for the whole time."];
+ return `<h2>ELPA21 Practice</h2><p class="lead">Five short tasks in the style of the ELPA21 test, on new texts. About 10 minutes. Work on your own.</p>
+ <p class="muted">Classroom practice inspired by ELPA21 task types. These are not official test items, and the score is not an ELPA21 level. Score so far: ${elpaScore(l,d)} of 3</p>
+ <h3>Listening · listen and answer</h3><div class="panel audio"><p class="now" id="nowsp">${T.now||"Listen to a short announcement. You may play it twice."}</p><div class="row"><button class="btn" data-act="eplay">Play</button><button class="btn ghost" data-act="stop">Stop</button></div><p class="muted">No sound on this device? Your teacher will read it aloud.</p></div>
+ ${qCard(E.listen,0,"L","eq","eqc")}${(S.teacher||(d.eqc||{})[0])?`<p class="key"><b>Transcript:</b> ${E.listen.t}</p>`:""}
+ <h3>Reading · read and answer</h3><p class="rdbox">${E.read.t}</p>${qCard(E.read,1,"R","eq","eqc")}
+ <h3>Writing · edit a sentence</h3>${qCard(E.edit,2,"W","eq","eqc")}
+ <h3>Writing · ${E.write[0]}</h3><div class="q"><p class="qt"><span class="qn">W</span>${E.write[1]}</p>${ta("ew","Write 2-4 sentences.",4)}</div>
+ <h3>Speaking · ${E.speak[0]}</h3><div class="q"><p class="qt"><span class="qn">S</span>${E.speak[1]}</p><div class="row"><button class="btn sm" data-act="timer" data-s="15" data-l="Think">Think · 15 s</button><button class="btn sm" data-act="timer" data-s="45" data-l="Speak">Speak · 45 s</button></div>
+ <div class="checks">${sp.map((x,i)=>`<button class="chk ${ck[i]?"on":""}" data-act="tog" data-k="esp" data-i="${i}" aria-pressed="${ck[i]?"true":"false"}"><i></i>${x}</button>`).join("")}</div></div>`;}
+ACT.eplay=function(){const E=ELPA[Lx().id];const set=t=>{T.now=t;const e=$("nowsp");if(e)e.textContent=t;};if(!TTS.ok){set("Audio is not available on this device. Your teacher will read it aloud.");return;}set("Playing…");speak(sents(E.listen.t).map(t=>({t:t,v:3})),null,ok=>set(ok?"Finished. Answer the question, or play it once more.":"Audio did not start on this device. Your teacher will read it aloud."));};
 
+/* ---------- Arcade ---------- */
+const GM={run:false,raf:0,iv:0,keys:{},onKey:null};
+const PX='"Press Start 2P","Courier New",monospace',MONO='bold 14px "Courier New",monospace',GRN="#39ff14",AMB="#ffc233",RED="#ff4d4d";
+function stopGame(){GM.run=false;cancelAnimationFrame(GM.raf);clearInterval(GM.iv);GM.keys={};GM.onKey=null;}
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function wrapT(ctx,t,x,y,w,lh){let line="";t.split(" ").forEach(wd=>{const tt=line?line+" "+wd:wd;if(ctx.measureText(tt).width>w&&line){ctx.fillText(line,x,y);y+=lh;line=wd;}else line=tt;});ctx.fillText(line,x,y);}
+function hud(ctx,name,st,clue){ctx.fillStyle="#000";ctx.fillRect(0,0,480,380);ctx.textAlign="left";ctx.textBaseline="top";ctx.font="10px "+PX;ctx.fillStyle=GRN;ctx.fillText("SCORE "+st.score,10,8);ctx.fillStyle=RED;ctx.fillText("♥".repeat(Math.max(0,st.lives)),200,8);ctx.fillStyle=AMB;ctx.textAlign="right";ctx.fillText("HI "+((S.hi||{})[name]||0),470,8);ctx.textAlign="left";ctx.fillStyle="#fff";ctx.font=MONO;wrapT(ctx,clue,10,28,460,17);ctx.strokeStyle="#1d5c12";ctx.beginPath();ctx.moveTo(0,78);ctx.lineTo(480,78);ctx.stroke();}
+function banner(ctx,a,b){ctx.fillStyle="rgba(0,0,0,.82)";ctx.fillRect(40,150,400,110);ctx.strokeStyle=GRN;ctx.strokeRect(40.5,150.5,400,110);ctx.textAlign="center";ctx.fillStyle=GRN;ctx.font="16px "+PX;ctx.fillText(a,240,176);ctx.fillStyle="#fff";ctx.font="9px "+PX;ctx.fillText(b,240,222);}
+function endGame(name,st){S.hi=S.hi||{};if(st.score>(S.hi[name]||0)){S.hi[name]=st.score;save();}}
+function attract(){const c=$("gcv");if(!c)return;const ctx=c.getContext("2d");const inv=T.game!=="snake";hud(ctx,inv?"inv":"snake",{score:0,lives:3},inv?"Read the meaning. Shoot the word that matches it. A wrong hit costs a life.":"Read the meaning. Steer the snake to eat the letters in order and spell the word.");banner(ctx,inv?"WORD INVADERS":"SPELL SNAKE","PRESS START");}
+function startInv(){const l=Lx();stopGame();const c=$("gcv");if(!c)return;const ctx=c.getContext("2d");
+ const st={score:0,lives:3,round:0,order:shuf([0,1,2,3,4,5,6,7]),px:240,shots:[],inv:[],dir:1,spd:1,cool:0,msg:"",msgT:0,over:false,win:false};
+ function reset(){st.inv.forEach((v,i)=>{v.x=8+i*140;v.y=92;});st.dir=1;st.shots=[];}
+ function newRound(){if(st.round>=8){st.over=true;st.win=true;endGame("inv",st);return;}const ans=st.order[st.round];const set=shuf([ans].concat(shuf([0,1,2,3,4,5,6,7].filter(k=>k!==ans)).slice(0,2)));st.ans=ans;st.inv=set.map(k=>({k:k,w:132,h:30,dead:false}));st.spd=0.8+st.round*0.14;reset();}
+ function lose(m){st.lives--;st.msg=m;st.msgT=70;if(st.lives<=0){st.over=true;endGame("inv",st);}}
+ newRound();GM.run=true;
+ (function step(){if(!GM.run||!document.body.contains(c))return;
+  if(!st.over){if(GM.keys.left)st.px-=4.5;if(GM.keys.right)st.px+=4.5;st.px=Math.max(18,Math.min(462,st.px));if(st.cool>0)st.cool--;if((GM.keys.fire||GM.keys.fireQ)&&st.cool===0){st.shots.push({x:st.px,y:340});st.cool=16;}GM.keys.fireQ=false;
+   const al=st.inv.filter(v=>!v.dead);const mn=Math.min.apply(null,al.map(v=>v.x)),mxx=Math.max.apply(null,al.map(v=>v.x+v.w));
+   if((mxx>=478&&st.dir>0)||(mn<=2&&st.dir<0)){st.dir*=-1;st.inv.forEach(v=>v.y+=10);}
+   st.inv.forEach(v=>v.x+=st.dir*st.spd);
+   st.shots.forEach(s=>s.y-=7);
+   for(const s of st.shots){for(const v of al){if(!s.hit&&s.x>v.x&&s.x<v.x+v.w&&s.y<v.y+v.h&&s.y>v.y){s.hit=true;if(v.k===st.ans){st.score+=10;st.round++;st.msg="CORRECT: "+l.vocab[v.k][0].toUpperCase();st.msgT=60;newRound();}else{v.dead=true;lose("NOT "+l.vocab[v.k][0].toUpperCase());}}}}
+   st.shots=st.shots.filter(s=>!s.hit&&s.y>80);
+   if(!st.over&&st.inv.some(v=>!v.dead&&v.y+v.h>=330)){lose("TOO SLOW");if(!st.over)reset();}}
+  hud(ctx,"inv",st,st.over?"":l.vocab[st.ans][2]);
+  st.inv.forEach(v=>{if(v.dead)return;ctx.fillStyle="#0b2a07";ctx.fillRect(v.x,v.y,v.w,v.h);ctx.strokeStyle=GRN;ctx.strokeRect(v.x+.5,v.y+.5,v.w-1,v.h-1);ctx.fillStyle=GRN;ctx.fillRect(v.x+10,v.y-6,8,6);ctx.fillRect(v.x+v.w-18,v.y-6,8,6);ctx.textAlign="center";ctx.font="10px "+PX;ctx.fillText(l.vocab[v.k][0].toUpperCase(),v.x+v.w/2,v.y+10);});
+  ctx.fillStyle=AMB;st.shots.forEach(s=>ctx.fillRect(s.x-2,s.y,4,10));
+  ctx.fillStyle="#fff";ctx.fillRect(st.px-16,350,32,10);ctx.fillRect(st.px-4,340,8,10);
+  if(st.msgT>0&&!st.over){st.msgT--;ctx.textAlign="center";ctx.font="10px "+PX;ctx.fillStyle=st.msg.indexOf("CORRECT")===0?GRN:RED;ctx.fillText(st.msg,240,368);}
+  if(st.over)banner(ctx,st.win?"YOU WIN":"GAME OVER","SCORE "+st.score+" · PRESS START");
+  GM.raf=requestAnimationFrame(step);})();}
+function startSnake(){const l=Lx();stopGame();const c=$("gcv");if(!c)return;const ctx=c.getContext("2d");const CW=24,RH=15,CS=20,TOP=80;
+ const st={score:0,lives:3,wi:0,order:shuf([0,1,2,3,4,5,6,7]).slice(0,5),snake:[],dir:[1,0],nd:[1,0],letters:[],pos:0,word:"",msg:"",msgT:0,over:false,win:false};
+ function resetSnake(){st.snake=[{x:5,y:7},{x:4,y:7},{x:3,y:7}];st.dir=[1,0];st.nd=[1,0];}
+ function free(x,y){return !(y===7&&x<12)&&!st.snake.some(p=>p.x===x&&p.y===y)&&!st.letters.some(p=>p.x===x&&p.y===y);}
+ function newWord(){if(st.wi>=5){st.over=true;st.win=true;endGame("snake",st);return;}st.k=st.order[st.wi];st.word=l.vocab[st.k][0].replace(/[^a-z]/gi,"").toUpperCase();st.pos=0;st.letters=[];st.word.split("").forEach(ch=>{let x,y,n=0;do{x=1+Math.floor(Math.random()*(CW-2));y=1+Math.floor(Math.random()*(RH-2));}while(!free(x,y)&&++n<200);st.letters.push({x:x,y:y,ch:ch});});}
+ function lose(m){st.lives--;st.msg=m;st.msgT=10;if(st.lives<=0){st.over=true;endGame("snake",st);}}
+ resetSnake();newWord();GM.run=true;
+ GM.onKey=k=>{const m={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]}[k];if(m&&!(m[0]===-st.dir[0]&&m[1]===-st.dir[1]))st.nd=m;};
+ function draw(){hud(ctx,"snake",st,st.over?"":l.vocab[st.k][2]);ctx.font="10px "+PX;ctx.textAlign="left";ctx.fillStyle=AMB;ctx.fillText(st.word.slice(0,st.pos)+"_".repeat(st.word.length-st.pos),10,62);
+  ctx.textAlign="center";st.letters.forEach(p=>{const nx=p.ch===st.word[st.pos];ctx.fillStyle=nx?"#0b2a07":"#111";ctx.fillRect(p.x*CS,TOP+p.y*CS,CS,CS);ctx.fillStyle="#fff";ctx.font="12px "+PX;ctx.fillText(p.ch,p.x*CS+CS/2+1,TOP+p.y*CS+5);});
+  st.snake.forEach((p,i)=>{ctx.fillStyle=i?GRN:"#b6ff9c";ctx.fillRect(p.x*CS+1,TOP+p.y*CS+1,CS-2,CS-2);});
+  if(st.msgT>0&&!st.over){ctx.font="10px "+PX;ctx.fillStyle=RED;ctx.textAlign="right";ctx.fillText(st.msg,470,62);}
+  if(st.over)banner(ctx,st.win?"YOU WIN":"GAME OVER","SCORE "+st.score+" · PRESS START");}
+ draw();
+ GM.iv=setInterval(()=>{if(!GM.run||!document.body.contains(c)){stopGame();return;}if(st.over){draw();return;}if(st.msgT>0)st.msgT--;
+  st.dir=st.nd;const h={x:st.snake[0].x+st.dir[0],y:st.snake[0].y+st.dir[1]};
+  if(h.x<0||h.y<0||h.x>=CW||h.y>=RH||st.snake.some(p=>p.x===h.x&&p.y===h.y)){lose("CRASH");resetSnake();draw();return;}
+  st.snake.unshift(h);const li=st.letters.findIndex(p=>p.x===h.x&&p.y===h.y);
+  if(li>=0&&st.letters[li].ch===st.word[st.pos]){st.letters.splice(li,1);st.pos++;st.score+=5;if(st.pos>=st.word.length){st.score+=20;st.wi++;st.snake=st.snake.slice(0,3);newWord();}}
+  else{if(li>=0)lose("NEXT LETTER: "+st.word[st.pos]);st.snake.pop();}
+  draw();},170);}
+function gkey(k,down){if(!GM.run)return;if(GM.onKey){if(down)GM.onKey(k);}else{GM.keys[k]=down;if(k==="fire"&&down)GM.keys.fireQ=true;}}
+const KMAP={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down",a:"left",d:"right",w:"up",s:"down"," ":"fire"};
+["keydown","keyup"].forEach(ev=>document.addEventListener(ev,e=>{const k=KMAP[e.key];if(!k||!GM.run||/INPUT|TEXTAREA/.test(e.target.tagName))return;e.preventDefault();gkey(k,ev==="keydown");}));
+document.addEventListener("pointerdown",e=>{const b=e.target.closest("[data-key]");if(b){e.preventDefault();gkey(b.dataset.key,true);}});
+["pointerup","pointercancel","pointerout"].forEach(ev=>document.addEventListener(ev,e=>{const b=e.target.closest&&e.target.closest("[data-key]");if(b)gkey(b.dataset.key,false);}));
+function arcadeView(l,d){const inv=T.game!=="snake";
+ return `<h2>Arcade</h2><p class="lead">Old-school games built from today's eight words. Pick a game and press Start.</p>
+ <div class="seg wrap"><button class="${inv?"on":""}" data-act="game" data-g="inv">Word Invaders</button><button class="${inv?"":"on"}" data-act="game" data-g="snake">Spell Snake</button></div>
+ <div class="cab"><canvas id="gcv" width="480" height="380" aria-label="${inv?"Word Invaders":"Spell Snake"} game screen"></canvas>
+ <div class="pad">${inv?`<button data-key="left" aria-label="Move left">◀</button><button data-key="fire" class="fire">FIRE</button><button data-key="right" aria-label="Move right">▶</button>`:`<button data-key="left" aria-label="Left">◀</button><button data-key="up" aria-label="Up">▲</button><button data-key="down" aria-label="Down">▼</button><button data-key="right" aria-label="Right">▶</button>`}</div>
+ <button class="startb" data-act="gstart">START</button></div>
+ <p class="muted">${inv?"Keyboard: left and right arrows to move, space bar to fire. Eight rounds, one for each word.":"Keyboard: arrow keys to steer. Eat the letters in order. Five words to win."} The games need you to see the screen and react quickly; if that does not work for you, use the Match check on the Words step instead.</p>`;}
+ACT.game=function(x){T.game=x.g;render();};
+ACT.gstart=function(){(T.game==="snake"?startSnake:startInv)();const c=$("gcv");c&&c.scrollIntoView&&c.scrollIntoView({block:"center"});};
+VIEW.splice(9,0,elpaView,arcadeView);
+
+fromHash();render();
 </script>
 </body>
 </html>

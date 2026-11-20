@@ -10,7 +10,7 @@ Interactive lesson week for the grades 9-12 EL block (Emerging + Progressing), N
 | Thursday | Ten Minutes Later | Sequence, cause and effect |
 | Friday | The C That Was Not the End | Autobiography and turning points |
 
-Each day runs the same nine steps: Opinion Line, Vocabulary Password, reading with claim/evidence marking, questions 1-8, Evidence Auction, listening with questions 9-12, Data Detective, 60-Second Pitch, writing and exit ticket.
+Each day runs the same steps: Opinion Line, Vocabulary Password, reading with claim/evidence marking, questions 1-8, Evidence Auction, listening with questions 9-12, Data Detective, 60-Second Pitch, writing and exit ticket, then ELPA21-style practice, a retro vocabulary arcade (Word Invaders and Spell Snake), and a wrap-up. Each day has an instructional coach who explains every step.
 
 Teacher view (agenda, keys, transcripts, rubric) is password-protected and locks again whenever the page is reloaded.
 
