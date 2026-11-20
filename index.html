@@ -144,6 +144,7 @@ th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
 .chk{display:flex;gap:10px;align-items:center;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;min-height:46px}
 .chk i{flex:0 0 auto;width:22px;height:22px;border:2px solid var(--muted);border-radius:6px}
 .chk.on{border-color:var(--ok)}.chk.on i{background:var(--ok);border-color:var(--ok);box-shadow:inset 0 0 0 3px var(--card)}
+.chk.up{align-items:flex-start}.chk.up i{margin-top:3px}.newm{font-style:normal;background:var(--gold);color:#1b1500;border-radius:999px;padding:1px 9px;font-size:.78rem;font-weight:700}
 .meters{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .chip{border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.88rem;color:var(--muted)}
 .chip.hit{border-color:var(--ok);color:var(--ok);font-weight:700}
@@ -544,6 +545,13 @@ const LESSONS=[
  sample:"My advice is to treat your first grade as information. At first, Sonia Sotomayor earned a C on her first history paper at Princeton. Instead of quitting, she asked what was wrong and studied grammar during her summers. Later she graduated with highest honors. The committee's results show the same pattern: students chose 6 bowls in Week 1 and 15 in Week 3 after two changes. Although effort does not guarantee success, asking what went wrong gives you something to fix. Ask your teacher one specific question about your work this week."
 }
 ];
+const STEPUP=[
+ ["Explain the link","After your evidence, add: This shows that __.","this shows|this means|this matters"],
+ ["Name a limit","Add: However, this does not prove __.","not prove|n't prove|cannot show|does not show"],
+ ["Open with although","Rewrite your first sentence: Although __, I recommend __.","although"],
+ ["Add another view","Add: Some people may say __.","some people|someone may|others may|others might"],
+ ["Answer that view","Add: I understand that view, but __ because __.","i understand|that view|i disagree"]
+];
 const KEY="look-again-week-v1";
 const STEPS=["Opinion","Words","Read","Proof","Auction","Listen","Data","Pitch","Write","Wrap-up"];
 const FR={E:{op:"I think __ because __.",short:"The claim needs more evidence because __. In paragraph __, __.",pitch:"I recommend __. The numbers show __. In the reading/conversation, __. One concern is __.",write:"I recommend __ because __. In paragraph __, __. The numbers show __.",target:[4,6],tt:"Write 4-6 connected sentences."},
@@ -637,7 +645,7 @@ function(l,d){const txt=d.short||"";
  return `<h2>Find the proof</h2><p class="lead">Go back to the reading as often as you need. Choose one answer unless the question says otherwise.</p>
  <p class="muted">Reading score so far: ${mcScore(l.qs,d.q,d.qc)} of 7</p>
  ${l.qs.map((q,i)=>qCard(q,i,i+1,"q","qc")).join("")}
- <div class="q"><p class="qt"><span class="qn">8</span>${l.short.q}</p>${frame("short")}${ta("short","Write your explanation. Use a word that connects your reason to your evidence.",4)}
+ <div class="q"><p class="qt"><span class="qn">8</span>${l.short.q}</p><p class="frame"><span class="tag">Everyone starts here</span> ${FR.E.short}</p><p class="frame"><span class="tag">Step up</span> ${FR.P.short}</p>${ta("short","Write your explanation. Use a word that connects your reason to your evidence.",4)}
  <p class="muted">Your teacher scores this one: 1 point for explaining why the claim is too broad, 1 point for relevant evidence.</p>
  ${S.teacher?`<p class="key"><b>Sample:</b> ${l.short.sample} Accept other text-supported explanations.</p>`:""}</div>`;},
 
@@ -692,11 +700,14 @@ function(l,d){const ck=d.pchk||{};const items=["I heard a clear recommendation."
 
 function(l,d){const pl=["My claim","Source 1 + detail","Source 2 + detail","Concern + response"];const rv=d.rev||{};
  const ri=["I stated a recommendation.","I named two sources.","I explained how the evidence supports my idea.",`I used a connector: ${l.write.connectors.join(", ")}.`,"I checked sentence boundaries and subject-verb agreement."];
- const op=d.op!=null?l.opinion.pos[d.op]:null;
+ const op=d.op!=null?l.opinion.pos[d.op]:null;const n1=LESSONS.indexOf(l)+1,up=d.up||{};
  return `<h2>Your Recommendation</h2><p class="lead">${l.write.prompt}</p>
  <h3>Plan · 2 minutes</h3>${pl.map((p,i)=>`<label class="lb" for="f-wplan-${i}">${p}</label>${inp("wplan."+i,p)}`).join("")}
- <h3>Draft · 8 minutes</h3>${frame("write")}<p class="muted">${FR[S.lane].tt} These are practice targets; use enough language to explain your thinking.</p>
+ <h3>Draft · 8 minutes</h3><p class="frame"><span class="tag">Everyone starts here</span> ${FR.E.write}</p><p class="muted">Write 4-6 connected sentences. This is a practice target; use enough language to explain your thinking.</p>
  ${ta("draft","Write here.",9,true)}<div id="meters" class="meters"></div>
+ <h3>Step up toward Progressing</h3><p class="muted">Your 4-6 sentences come first. Then try ${n1===1?"this move":"these moves"}, one at a time. Each one adds a sentence or improves one you already wrote. A new move is added each day this week.</p>
+ <div class="checks">${STEPUP.slice(0,n1).map((s,i)=>`<button class="chk up ${up[i]?"on":""}" data-act="tog" data-k="up" data-i="${i}" aria-pressed="${up[i]?"true":"false"}"><i></i><span><b>${i+1}. ${s[0]}</b>${i===n1-1?' <em class="newm">New today</em>':""}<br>${s[1]}</span></button>`).join("")}</div>
+ <p class="muted" id="upmsg"></p>
  <div class="row"><button class="btn sm ghost" data-act="timer" data-s="480" data-l="Draft">Start 8-minute draft timer</button><button class="btn sm ghost" data-act="timer" data-s="180" data-l="Revise">3-minute revise timer</button></div>
  <h3>Revise like an editor</h3><div class="checks">${ri.map((x,i)=>`<button class="chk ${rv[i]?"on":""}" data-act="tog" data-k="rev" data-i="${i}" aria-pressed="${rv[i]?"true":"false"}"><i></i>${x}</button>`).join("")}</div>
  <h3>Exit ticket · on your own</h3>${op?`<p class="note">At the start of class you chose: <b>${op}</b>. Has the evidence supported or changed that?</p>`:""}
@@ -727,11 +738,11 @@ function(l,d){const ds=dataScore(l,d);const rs=d.resc||{};const rub=d.rub||{};le
 ];
 
 function workText(){const l=Lx(),d=D(),ds=dataScore(l,d);const v=x=>x||"(blank)";
- return [`${l.day}: ${l.title}`,`Opinion at start: ${d.op!=null?l.opinion.pos[d.op]:"(none)"} - ${v(d.opWhy)}`,`Reading 1-7: ${mcScore(l.qs,d.q,d.qc)}/7`,`Question 8: ${v(d.short)}`,`Listening 9-12: ${mcScore(l.listen.qs,d.lq,d.lqc)}/4 | Sequence: ${d.seqc?(seqOK(l,d)?"correct":"not yet"):"not checked"}`,`Listening notes: ${l.listen.cast.map((c,i)=>c+": "+v((d.ln||{})[i])).join(" | ")}`,`Data: ${ds[0]}/${ds[1]} | Explanation: ${v(d.dexp)}`,`Pitch plan: ${[0,1,2,3].map(i=>v((d.pitch||{})[i])).join(" | ")}`,`Writing plan: ${[0,1,2,3].map(i=>v((d.wplan||{})[i])).join(" | ")}`,`Draft: ${v(d.draft)}`,`Exit ticket: My opinion is ${v((d.exit||{})[0])}. One piece of evidence is ${v((d.exit||{})[1])}. This supports/changes my opinion because ${v((d.exit||{})[2])}.`,`Domain to improve: ${v(d.dom)}`].join("\n");}
+ return [`${l.day}: ${l.title}`,`Opinion at start: ${d.op!=null?l.opinion.pos[d.op]:"(none)"} - ${v(d.opWhy)}`,`Reading 1-7: ${mcScore(l.qs,d.q,d.qc)}/7`,`Question 8: ${v(d.short)}`,`Listening 9-12: ${mcScore(l.listen.qs,d.lq,d.lqc)}/4 | Sequence: ${d.seqc?(seqOK(l,d)?"correct":"not yet"):"not checked"}`,`Listening notes: ${l.listen.cast.map((c,i)=>c+": "+v((d.ln||{})[i])).join(" | ")}`,`Data: ${ds[0]}/${ds[1]} | Explanation: ${v(d.dexp)}`,`Pitch plan: ${[0,1,2,3].map(i=>v((d.pitch||{})[i])).join(" | ")}`,`Writing plan: ${[0,1,2,3].map(i=>v((d.wplan||{})[i])).join(" | ")}`,`Draft: ${v(d.draft)}`,`Step-up moves checked: ${STEPUP.map((s,i)=>(d.up||{})[i]?s[0]:null).filter(Boolean).join(", ")||"none"}`,`Exit ticket: My opinion is ${v((d.exit||{})[0])}. One piece of evidence is ${v((d.exit||{})[1])}. This supports/changes my opinion because ${v((d.exit||{})[2])}.`,`Domain to improve: ${v(d.dom)}`].join("\n");}
 
-function live(){const el=$("meters");if(!el)return;const l=Lx(),t=(D().draft||"");const n=(t.match(/[^.!?]+[.!?]+/g)||[]).length;const tg=FR[S.lane].target;const low=t.toLowerCase();
+function live(){const el=$("meters");if(!el)return;const l=Lx(),t=(D().draft||"");const n=(t.match(/[^.!?]+[.!?]+/g)||[]).length;const tg=FR.E.target;const low=t.toLowerCase();const n1=LESSONS.indexOf(l)+1;const hits=STEPUP.slice(0,n1).map(s=>new RegExp(s[2]).test(low));const um=$("upmsg");if(um){const c=hits.filter(Boolean).length;um.textContent=n<tg[0]?"Finish your 4-6 sentences first.":(c===n1?"You used every step-up move. That is Progressing-level writing.":`Step-up moves found in your draft: ${c} of ${n1}.`);}
  const src=[["Reading",/paragraph|reading|passage|article|autobiography/.test(low)],["Conversation",new RegExp(l.write.talk).test(low)],["Numbers",/\d/.test(low)&&/survey|table|test|votes|volunteers|doses|bowls|results|\bof\b/.test(low)]];
- el.innerHTML=`<span class="chip ${n>=tg[0]?"hit":""}">${n} sentence${n===1?"":"s"} · target ${tg[0]}-${tg[1]}</span>`+src.map(s=>`<span class="chip ${s[1]?"hit":""}">${s[0]}</span>`).join("")+l.write.connectors.map(c=>`<span class="chip ${low.includes(c)?"hit":""}">${c}</span>`).join("");}
+ el.innerHTML=`<span class="chip ${n>=tg[0]?"hit":""}">${n} sentence${n===1?"":"s"} · target ${tg[0]}-${tg[1]}</span>`+STEPUP.slice(0,n1).map((s,i)=>`<span class="chip ${hits[i]?"hit":""}">Step ${i+1}</span>`).join("")+src.map(s=>`<span class="chip ${s[1]?"hit":""}">${s[0]}</span>`).join("")+l.write.connectors.map(c=>`<span class="chip ${low.includes(c)?"hit":""}">${c}</span>`).join("");}
 
 
 function clock(start,add){if(!start||!/^\d\d:\d\d$/.test(start))return "";let m=(+start.slice(0,2))*60+(+start.slice(3))+add;m=((m%1440)+1440)%1440;const h=Math.floor(m/60),mm=m%60;return ((h+11)%12+1)+":"+String(mm).padStart(2,"0");}
@@ -749,7 +760,7 @@ function render(scroll){const l=Lx(),d=D();document.documentElement.style.setPro
  <p class="mission"><b>Mission.</b> ${l.mission}</p>
  <div class="board"><div><h4>Essential question</h4><p>${l.eq}</p></div><div><h4>Content objective</h4><p>${l.board.content}</p></div><div><h4>Language objective</h4><p>${l.board.language}</p></div><div><h4>I can</h4><ul>${l.targets.map(t=>`<li>${t.replace(/^I can /,"")}</li>`).join("")}</ul></div><div class="wide"><h4>Standards</h4><p>MS CCRS ELA: ${l.board.ela}</p><p>${ELP}</p></div></div>
  ${S.teacher?`<div class="key big"><h3>Teacher guide</h3><p>${l.tnote}</p>
- <details><summary>Delivery notes and scaffolds</summary>${DELIVERY.map(x=>`<p><b>${x[0]}.</b> ${x[1]}</p>`).join("")}<p><b>Emerging.</b> Chunk paragraphs; bilingual vocabulary; gesture; partner rehearsal. Aim for 3-4 linked oral sentences and 4-6 written sentences.</p><p><b>Progressing.</b> Annotate independently; explain how evidence supports a claim. Aim for a 45-60 second pitch and an 8-10 sentence paragraph with a counterargument.</p><p><b>45-minute option.</b> Opinion Line 3; vocabulary 4; reading + questions 1-4 and 8 for 10; listening 8; data + pitch 8; writing 10; exit 2. Use the other questions and the auction next class.</p><p><b>Practice note.</b> Original classroom tasks inspired by ELPA21 language demands. Timings, scaffolds, games, and rubric are instructional choices, not official test administration or scoring.</p></details></div>`:""}`;
+ <details><summary>Delivery notes and scaffolds</summary>${DELIVERY.map(x=>`<p><b>${x[0]}.</b> ${x[1]}</p>`).join("")}<p><b>Emerging.</b> Chunk paragraphs; bilingual vocabulary; gesture; partner rehearsal. Aim for 3-4 linked oral sentences and 4-6 written sentences.</p><p><b>Progressing.</b> Annotate independently; explain how evidence supports a claim. Aim for a 45-60 second pitch.</p><p><b>Writing this week.</b> Every student writes the Emerging task: 4-6 connected sentences with the Emerging frame. The Step up toward Progressing box then adds one move a day (explain the link, name a limit, open with although, add another view, answer that view), so by Friday a student who uses all five has written a Progressing-level paragraph with a counterargument and response.</p><p><b>45-minute option.</b> Opinion Line 3; vocabulary 4; reading + questions 1-4 and 8 for 10; listening 8; data + pitch 8; writing 10; exit 2. Use the other questions and the auction next class.</p><p><b>Practice note.</b> Original classroom tasks inspired by ELPA21 language demands. Timings, scaffolds, games, and rubric are instructional choices, not official test administration or scoring.</p></details></div>`:""}`;
  $("agenda").innerHTML=agendaHTML(l,d);document.body.classList.toggle("proj",!!T.board);
  $("steps").innerHTML=STEPS.map((s,i)=>`<button class="stp ${i===d.step?"on":""}" data-act="step" data-i="${i}"><b>${i+1}</b>${s}</button>`).join("");
  $("panel").innerHTML=VIEW[d.step||0](l,d);
