@@ -12,7 +12,7 @@ Interactive lesson week for the grades 9-12 EL block (Emerging + Progressing), N
 
 Each day runs the same nine steps: Opinion Line, Vocabulary Password, reading with claim/evidence marking, questions 1-8, Evidence Auction, listening with questions 9-12, Data Detective, 60-Second Pitch, writing and exit ticket.
 
-Teacher view (agenda, keys, transcripts, rubric) opens by typing the word `teacher`.
+Teacher view (agenda, keys, transcripts, rubric) is password-protected and locks again whenever the page is reloaded.
 
 Student work is saved on the device only. Students hand it in with "Copy my work" on the Wrap-up step.
 

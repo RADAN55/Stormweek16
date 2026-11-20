@@ -182,7 +182,7 @@ th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
  <p class="foot">EL Publishing · Look Again · Original classroom practice. Work is saved on this device only; use Copy my work on the Wrap-up step to hand it in. Readings are new teaching texts inspired by magazine articles and an autobiography, not transcriptions. Committee conversations and survey data are fictional unless a step says otherwise.</p>
 </main>
 <div class="timer" id="timer" hidden></div>
-<div class="gate" id="gate" hidden><div role="dialog" aria-modal="true" aria-labelledby="gt"><h3 id="gt">Teacher view</h3><p>Teacher view shows the agenda, answer keys, the listening transcript, and the rubric. Type the word <b>teacher</b> to open it.</p><label class="lb" for="gatein">Word</label><input type="text" id="gatein" autocomplete="off"><p class="muted" id="gatemsg"></p><div class="row"><button class="btn" data-act="gateok">Open</button><button class="btn ghost" data-act="gateno">Cancel</button></div></div></div>
+<div class="gate" id="gate" hidden><div role="dialog" aria-modal="true" aria-labelledby="gt"><h3 id="gt">Teacher view</h3><p>Teacher view shows the agenda, answer keys, the listening transcript, and the rubric. Enter the teacher password to open it.</p><label class="lb" for="gatein">Password</label><input type="password" id="gatein" inputmode="numeric" autocomplete="off"><p class="muted" id="gatemsg"></p><div class="row"><button class="btn" data-act="gateok">Open</button><button class="btn ghost" data-act="gateno">Cancel</button></div></div></div>
 <script>
 const AGENDA=[
  [5,"Opinion Line","State and explain an opinion",0],
@@ -528,10 +528,10 @@ const KEY="look-again-week-v1";
 const STEPS=["Opinion","Words","Read","Proof","Auction","Listen","Data","Pitch","Write","Wrap-up"];
 const FR={E:{op:"I think __ because __.",short:"The claim needs more evidence because __. In paragraph __, __.",pitch:"I recommend __. The numbers show __. In the reading/conversation, __. One concern is __.",write:"I recommend __ because __. In paragraph __, __. The numbers show __.",target:[4,6],tt:"Write 4-6 connected sentences."},
  P:{op:"Although __, I think __ because __.",short:"Although __, the claim needs more evidence because __.",pitch:"Although __, I recommend __ because __. The numbers suggest __. However, these results do not prove __.",write:"Although __, __. The evidence suggests __; however, it does not prove __.",target:[8,10],tt:"Write 8-10 sentences including a counterargument and response."}};
-let S=(function(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.days)return r;}catch(e){}return{lane:"P",es:false,teacher:false,day:"mon",days:{}};})();
+let S=(function(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.days)return r;}catch(e){}return{lane:"P",es:false,teacher:false,day:"mon",days:{}};})();S.teacher=false;
 const T={flip:{},pw:null,script:false,slow:false,now:"",copy:"",reset:false,mpick:null};
 const $=id=>document.getElementById(id);
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(Object.assign({},S,{teacher:false})));}catch(e){}}
 function D(){return S.days[S.day]||(S.days[S.day]={step:0});}
 function Lx(){return LESSONS.find(l=>l.id===S.day)||LESSONS[0];}
 function g(p){return p.split(".").reduce((o,k)=>o==null?undefined:o[k],D());}
@@ -736,8 +736,8 @@ const ACT={
  step(x){const i=+x.i;if(i<0||i>=STEPS.length)return;stopSpeak();T.now="";T.copy="";T.reset=false;st("step",i);render(true);},
  lane(x){S.lane=x.v;save();render();},
  es(){S.es=!S.es;save();render();},
- teach(){if(S.teacher){S.teacher=false;save();render();}else{$("gate").hidden=false;$("gatein").value="";$("gatemsg").textContent="";$("gatein").focus();}},
- gateok(){if($("gatein").value.trim().toLowerCase()==="teacher"){S.teacher=true;save();$("gate").hidden=true;render();}else{$("gatemsg").textContent="That is not the word. Type teacher to continue.";}},
+ teach(){if(S.teacher){S.teacher=false;render();}else{$("gate").hidden=false;$("gatein").value="";$("gatemsg").textContent="";$("gatein").focus();}},
+ gateok(){let x=5381;for(const c of $("gatein").value.trim()){x=(Math.imul(x,33)^c.charCodeAt(0))>>>0;}if(x===2085882790){S.teacher=true;$("gate").hidden=true;render();}else{$("gatemsg").textContent="That password is not correct.";$("gatein").value="";}},
  gateno(){$("gate").hidden=true;},
  op(x){st("op",+x.i);render();},
  tal(x){const t=(D().tally||[0,0,0]).slice();t[+x.i]=Math.max(0,t[+x.i]+(+x.n));st("tally",t);render();},
