@@ -153,6 +153,25 @@ th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
 .tile b{font-family:var(--display);font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}.tile small{font-size:1rem;color:var(--muted)}.tile span{font-size:.88rem;color:var(--muted)}
 .rb{background:none;border:1.5px solid transparent;border-radius:8px;text-align:left;padding:6px;font-size:.92rem;width:100%}
 .rb.on{border-color:var(--gold);background:var(--card);font-weight:600}
+
+.agenda{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:12px}
+.aghead{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between}
+.aghead h2{font-family:var(--display);font-size:1.4rem;margin:0}
+.aghead input[type=time]{background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;min-height:40px}
+.aglist{list-style:none;margin:8px 0 6px;padding:0;display:grid;gap:6px}
+.ag{display:flex;gap:6px;align-items:stretch}
+.agb{flex:1;display:grid;grid-template-columns:104px 1fr auto;gap:12px;align-items:center;text-align:left;border:1.5px solid var(--line);border-left:6px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;min-height:52px;min-width:0}
+.agt{font-variant-numeric:tabular-nums;font-weight:700;font-size:.95rem}
+.agn{display:flex;flex-direction:column;min-width:0}.agn small{color:var(--muted);font-size:.86rem}
+.ags{font-size:.82rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.ag.now .agb{border-color:var(--day);border-left-color:var(--gold);background:var(--soft)}
+.ag.now .ags{background:var(--gold);color:#1b1500;border-radius:999px;padding:2px 10px}
+.ag.done .agb{opacity:.6}.ag.done .agn b{text-decoration:line-through}
+.agq{font-size:1.05rem;max-width:none;margin:8px 0}
+@media (max-width:520px){.agb{grid-template-columns:1fr auto}.agt{grid-column:1/-1}}
+body.proj .ctl,body.proj .steps,body.proj .panel-main,body.proj .nav,body.proj .foot,body.proj .mission,body.proj .board,body.proj .hero .key{display:none}
+body.proj .wrap{max-width:1200px}
+body.proj .agenda{font-size:1.35rem}body.proj .aghead h2{font-size:2rem}body.proj .agb{min-height:68px;grid-template-columns:170px 1fr auto}body.proj .agt{font-size:1.25rem}body.proj .agn small{font-size:1.05rem}body.proj .agq{font-size:1.35rem}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
 .foot{font-size:.85rem;color:var(--muted);padding:8px 0 24px;max-width:75ch}
 .timer{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;padding:10px 16px;z-index:20}
@@ -176,6 +195,7 @@ th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
 <main class="wrap">
  <div class="ctl" id="ctl"></div>
  <section class="hero" id="hero"></section>
+ <section class="agenda" id="agenda" aria-label="Agenda board"></section>
  <nav class="steps" id="steps" aria-label="Lesson steps"></nav>
  <section class="panel-main" id="panel"></section>
  <div class="nav" id="nav"></div>
@@ -713,6 +733,14 @@ function live(){const el=$("meters");if(!el)return;const l=Lx(),t=(D().draft||""
  const src=[["Reading",/paragraph|reading|passage|article|autobiography/.test(low)],["Conversation",new RegExp(l.write.talk).test(low)],["Numbers",/\d/.test(low)&&/survey|table|test|votes|volunteers|doses|bowls|results|\bof\b/.test(low)]];
  el.innerHTML=`<span class="chip ${n>=tg[0]?"hit":""}">${n} sentence${n===1?"":"s"} · target ${tg[0]}-${tg[1]}</span>`+src.map(s=>`<span class="chip ${s[1]?"hit":""}">${s[0]}</span>`).join("")+l.write.connectors.map(c=>`<span class="chip ${low.includes(c)?"hit":""}">${c}</span>`).join("");}
 
+
+function clock(start,add){if(!start||!/^\d\d:\d\d$/.test(start))return "";let m=(+start.slice(0,2))*60+(+start.slice(3))+add;m=((m%1440)+1440)%1440;const h=Math.floor(m/60),mm=m%60;return ((h+11)%12+1)+":"+String(mm).padStart(2,"0");}
+function agendaHTML(l,d){const cur=d.ag==null?-1:d.ag;let t=0;
+ const rows=AGENDA.map((a,i)=>{const from=t;t+=a[0];const cl=S.start?`${clock(S.start,from)}–${clock(S.start,t)}`:`${from}–${t} min`;
+  return `<li class="ag ${i===cur?"now":""} ${i<cur?"done":""}"><button class="agb" data-act="ag" data-i="${i}" aria-current="${i===cur?"step":"false"}"><span class="agt">${cl}</span><span class="agn"><b>${a[1]}</b><small>${a[2]}</small></span><span class="ags">${i===cur?"Now":(i<cur?"Done":a[0]+" min")}</span></button><button class="mini w" data-act="timer" data-s="${a[0]*60}" data-l="${a[1]}" aria-label="Start ${a[0]}-minute timer for ${a[1]}">Timer</button></li>`;}).join("");
+ return `<div class="aghead"><h2>Agenda board</h2><div class="row"><label for="agstart" class="muted">Class starts</label><input type="time" id="agstart" data-g="start" value="${esc(S.start||"")}"><button class="btn sm ghost" data-act="board">${T.board?"Back to lesson":"Board view"}</button></div></div>
+ ${T.board?`<p class="agq"><b>Essential question.</b> ${l.eq}</p><p class="agq"><b>Language objective.</b> ${l.board.language}</p>`:""}
+ <ol class="aglist">${rows}</ol><p class="muted">${T.board?"Tap a task to mark it Now.":"Tap a task to mark it Now and open that step."} ${cur>=0?`<button class="lnk" data-act="agclear">Clear marks</button>`:""}</p>`;}
 /* ---------- render ---------- */
 function render(scroll){const l=Lx(),d=D();document.documentElement.style.setProperty("--day",l.color);
  $("days").innerHTML=LESSONS.map(x=>`<button class="day ${x.id===S.day?"on":""}" data-act="day" data-d="${x.id}" style="--c:${x.color}"><b>${x.abbr}</b><span>${x.title}</span></button>`).join("");
@@ -721,8 +749,8 @@ function render(scroll){const l=Lx(),d=D();document.documentElement.style.setPro
  <p class="mission"><b>Mission.</b> ${l.mission}</p>
  <div class="board"><div><h4>Essential question</h4><p>${l.eq}</p></div><div><h4>Content objective</h4><p>${l.board.content}</p></div><div><h4>Language objective</h4><p>${l.board.language}</p></div><div><h4>I can</h4><ul>${l.targets.map(t=>`<li>${t.replace(/^I can /,"")}</li>`).join("")}</ul></div><div class="wide"><h4>Standards</h4><p>MS CCRS ELA: ${l.board.ela}</p><p>${ELP}</p></div></div>
  ${S.teacher?`<div class="key big"><h3>Teacher guide</h3><p>${l.tnote}</p>
- <div class="tw"><table><thead><tr><th>Min</th><th>Task</th><th>Language evidence</th><th></th></tr></thead><tbody>${AGENDA.map(a=>`<tr><td>${a[0]}</td><td><button class="lnk" data-act="step" data-i="${a[3]}">${a[1]}</button></td><td>${a[2]}</td><td><button class="mini w" data-act="timer" data-s="${a[0]*60}" data-l="${a[1]}">Start</button></td></tr>`).join("")}</tbody></table></div>
  <details><summary>Delivery notes and scaffolds</summary>${DELIVERY.map(x=>`<p><b>${x[0]}.</b> ${x[1]}</p>`).join("")}<p><b>Emerging.</b> Chunk paragraphs; bilingual vocabulary; gesture; partner rehearsal. Aim for 3-4 linked oral sentences and 4-6 written sentences.</p><p><b>Progressing.</b> Annotate independently; explain how evidence supports a claim. Aim for a 45-60 second pitch and an 8-10 sentence paragraph with a counterargument.</p><p><b>45-minute option.</b> Opinion Line 3; vocabulary 4; reading + questions 1-4 and 8 for 10; listening 8; data + pitch 8; writing 10; exit 2. Use the other questions and the auction next class.</p><p><b>Practice note.</b> Original classroom tasks inspired by ELPA21 language demands. Timings, scaffolds, games, and rubric are instructional choices, not official test administration or scoring.</p></details></div>`:""}`;
+ $("agenda").innerHTML=agendaHTML(l,d);document.body.classList.toggle("proj",!!T.board);
  $("steps").innerHTML=STEPS.map((s,i)=>`<button class="stp ${i===d.step?"on":""}" data-act="step" data-i="${i}"><b>${i+1}</b>${s}</button>`).join("");
  $("panel").innerHTML=VIEW[d.step||0](l,d);
  $("nav").innerHTML=`<button class="btn ghost" data-act="step" data-i="${(d.step||0)-1}" ${d.step>0?"":"disabled"}>Back</button><span class="muted">Step ${(d.step||0)+1} of ${STEPS.length}</span><button class="btn" data-act="step" data-i="${(d.step||0)+1}" ${d.step<STEPS.length-1?"":"disabled"}>Next: ${STEPS[(d.step||0)+1]||"done"}</button>`;
@@ -739,6 +767,9 @@ const ACT={
  teach(){if(S.teacher){S.teacher=false;render();}else{$("gate").hidden=false;$("gatein").value="";$("gatemsg").textContent="";$("gatein").focus();}},
  gateok(){let x=5381;for(const c of $("gatein").value.trim()){x=(Math.imul(x,33)^c.charCodeAt(0))>>>0;}if(x===2085882790){S.teacher=true;$("gate").hidden=true;render();}else{$("gatemsg").textContent="That password is not correct.";$("gatein").value="";}},
  gateno(){$("gate").hidden=true;},
+ ag(x){const i=+x.i;st("ag",i);if(T.board){render();}else{stopSpeak();st("step",AGENDA[i][3]);render(true);}},
+ agclear(){st("ag",null);render();},
+ board(){T.board=!T.board;render();window.scrollTo(0,0);},
  op(x){st("op",+x.i);render();},
  tal(x){const t=(D().tally||[0,0,0]).slice();t[+x.i]=Math.max(0,t[+x.i]+(+x.n));st("tally",t);render();},
  flip(x){T.flip[x.i]=!T.flip[x.i];render();},
@@ -782,7 +813,7 @@ const ACT={
 };
 document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t||t.disabled)return;const f=ACT[t.dataset.act];if(f)f(t.dataset,t);});
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("sn")){e.preventDefault();ACT.mark(e.target.dataset,e.target);}if(e.key==="Enter"&&e.target.id==="gatein"){e.preventDefault();ACT.gateok();}});
-document.addEventListener("input",e=>{const b=e.target.dataset&&e.target.dataset.bind;if(!b)return;st(b,e.target.value);if(e.target.dataset.live)live();});
+document.addEventListener("input",e=>{if(e.target.dataset&&e.target.dataset.g){S[e.target.dataset.g]=e.target.value;save();if(/^\d\d:\d\d$/.test(e.target.value)||!e.target.value){render();const n=$("agstart");n&&n.focus();}return;}const b=e.target.dataset&&e.target.dataset.bind;if(!b)return;st(b,e.target.value);if(e.target.dataset.live)live();});
 function fromHash(){const h=(location.hash||"").replace("#","").toLowerCase();const l=LESSONS.find(x=>x.hash===h);if(l&&l.id!==S.day){S.day=l.id;save();return true;}return false;}
 window.addEventListener("hashchange",()=>{if(fromHash()){stopSpeak();render();}});
 fromHash();render();
