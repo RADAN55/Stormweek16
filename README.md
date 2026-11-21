@@ -1,6 +1,6 @@
 # Look Again: Storm Studio Week 16
 
-Interactive lesson week for the grades 9-12 EL block (Emerging + Progressing), Nov 30 - Dec 4, 2026. One 90-minute lesson per day, all in a single file (`index.html`).
+Interactive lesson week for EL classes, Nov 30 - Dec 4, 2026, in four grade bands (K-2, 3-5, 6-8, 9-12) chosen with the picker at the top of the page. One 90-minute lesson per day, all in a single file (`index.html`).
 
 | Day | Lesson | Language focus |
 |---|---|---|
